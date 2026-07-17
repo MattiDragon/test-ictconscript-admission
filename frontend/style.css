@@ -1,0 +1,83 @@
+:root {
+  font-family: sans-serif;
+}
+
+h1 {
+  margin-block-end: 0.25em;
+}
+
+.wrapper {
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+#add-event-dialog {
+  max-width: 500px;
+  width: calc(100% - 1em);
+  box-sizing: border-box;
+}
+
+#add-event-form {
+  > label {
+    display: block;
+    margin-block-start: 0.5em;
+  }
+
+  > h1 {
+    font-size: 1.5em;
+    margin-block-start: 0;
+  }
+
+  > textarea {
+    width: 100%;
+    resize: vertical;
+  }
+
+  > input {
+    width: 100%;
+  }
+
+  .form-buttons {
+    margin-block-start: 1em;
+  }
+}
+
+.error-message {
+  color: red;
+}
+
+#event-list {
+  display: grid;
+  margin-block-start: 1em;
+  grid-template-columns: 200px 1fr;
+  gap: 1rem 0;
+}
+
+.event {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-areas:
+    "time title"
+    "coords body";
+
+  grid-column: span 2;
+
+  > .event-title {
+    grid-area: title;
+    font-size: 1.25em;
+    margin-block-start: 0;
+  }
+
+  > .event-time {
+    grid-area: time;
+  }
+
+  > .event-coordinates {
+    grid-area: coords;
+  }
+
+  > .event-body {
+    grid-area: body;
+    margin-block-start: 0;
+  }
+}

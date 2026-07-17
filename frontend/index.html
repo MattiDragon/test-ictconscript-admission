@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+    <title>Unit Logbook</title>
+  </head>
+  <body>
+    <!-- Page content -->
+    <div class="wrapper">
+      <h1>Unit logbook</h1>
+      <div class="controls">
+        <button commandfor="add-event-dialog" command="show-modal">
+          Add event
+        </button>
+      </div>
+      <main id="event-list">
+        <span class="loading">Loading...</span>
+      </main>
+    </div>
+
+    <!-- Dialog for adding events -->
+    <dialog closedby="any" id="add-event-dialog">
+      <form id="add-event-form">
+        <h1>Add event</h1>
+        <label for="title-field">Title</label>
+        <input type="text" name="title" id="title-field" required />
+        <label for="body-field">Body</label>
+        <textarea name="body" id="body-field" required></textarea>
+        <label for="latitude-field">Latitude</label>
+        <input
+          type="number"
+          name="latitude"
+          id="latitude-field"
+          min="-90"
+          max="90"
+          step="any"
+        />
+        <label for="longitude-field">Longitude</label>
+        <input
+          type="number"
+          name="longitude"
+          id="longitude-field"
+          min="-90"
+          max="90"
+          step="any"
+        />
+        <div class="form-buttons">
+          <button type="submit">Submit</button>
+          <button type="button" commandfor="add-event-dialog" command="close">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Event base, copied for each event entry -->
+    <template id="event-template">
+      <div class="event">
+        <h2 class="event-title"></h2>
+        <span class="event-timestamp"></span>
+        <span class="event-coordinates">
+          <span class="latitude"></span>
+          <span class="longitude"></span>
+        </span>
+        <p class="event-body"></p>
+      </div>
+    </template>
+  </body>
+</html>
