@@ -34,14 +34,13 @@ if (
   });
 }
 
-const prevId = (db.prepare(`SELECT max(id) FROM events`).get()!!["max(id)"] ||
-  0) as number;
-let nextId = prevId + 1;
+const prevId = db.prepare(`SELECT max(id) FROM events`).get()!!["max(id)"];
+let nextId = ((prevId as number | null) ?? 0) + 1;
 
 const app = express();
 
 app.get("/health", (req, res) => {
-  res.send("OK");
+  res.contentType("text/plain").send("OK");
 });
 
 app.use(express.json());
@@ -63,7 +62,12 @@ app.get("/entries/:id", (req, res) => {
     res.status(400).json({ error: "Invalid id" });
     return;
   }
-  res.json(getEntryStatement.get(id));
+  const event = getEntryStatement.get(id);
+  if (event) {
+    res.json(event);
+  } else {
+    res.status(404).json({ error: "Entry not found" });
+  }
 });
 
 const addEntryStatement = db.prepare(
@@ -78,7 +82,7 @@ app.post("/entries", (req, res) => {
     return;
   }
   if (typeof payload.body !== "string") {
-    res.status(400).json({ error: "Missing or invalid bod, must be string" });
+    res.status(400).json({ error: "Missing or invalid body, must be string" });
     return;
   }
 

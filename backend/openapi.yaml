@@ -1,0 +1,128 @@
+openapi: 3.2.0
+info:
+  title: ICT Conscript Test Submission
+  version: 1.0.13
+servers:
+  - url: https://test-ictconscript-admission-1wjv.onrender.com
+paths:
+  /entries:
+    get:
+      tags: ["entries"]
+      summary: List all events
+      responses:
+        "200":
+          description:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/event"
+
+    post:
+      tags: ["entries"]
+      summary: Create an event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/event-base"
+      responses:
+        "200":
+          description: Event added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/event"
+        "400":
+          description: The submitted event was invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /entries/{id}:
+    get:
+      tags: ["entries"]
+      summary: Get an event by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/event"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              example: '{"error": "Invalid id"}'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              example: '{"error": "Entry not found"}'
+  /health:
+    get:
+      tags: ["health"]
+      summary: Health check
+      responses:
+        "200":
+          description: Service healthy
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK
+components:
+  schemas:
+    error:
+      properties:
+        error:
+          type: string
+          description: A human-readable string describing the error
+    event-base:
+      allOf:
+        - properties:
+            title:
+              type: string
+              description: The short name of the event
+              maxLength: 120
+            body:
+              type: string
+              description: An extended description of the event
+          required: ["title", "body"]
+        - anyOf:
+            - properties:
+                lat:
+                  type: number
+                  minimum: -90
+                  maximum: 90
+                  description: The latitude the event happened at
+                lon:
+                  type: number
+                  minimum: -180
+                  maximum: 180
+                  description: The longitude the event happened at
+              required: ["lat", "lon"]
+            - properties:
+    event:
+      allOf:
+        - $ref: "#/components/schemas/event-base"
+        - properties:
+            id:
+              type: integer
+              description: An arbirary numeric id for the event
+            isoTime:
+              type: string
+              description: The time of the event
+          required: ["id", "isoTime"]
