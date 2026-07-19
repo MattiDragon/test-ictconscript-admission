@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "node index.ts"
+    "dev": "node src/index.ts"
   },
   "dependencies": {
     "express": "^5.2.1"

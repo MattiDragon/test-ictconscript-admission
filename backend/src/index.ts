@@ -1,5 +1,5 @@
 import express from "express";
-import sampleData from "./sample-data/data.json" with { type: "json" };
+import sampleData from "../sample-data/data.json" with { type: "json" };
 import { DatabaseSync } from "node:sqlite";
 
 const db = new DatabaseSync("./db.sqlite");
@@ -42,7 +42,7 @@ let nextId = prevId + 1;
 const app = express();
 
 app.get("/health", (req, res) => {
-  res.write("OK");
+  res.send("OK");
 });
 
 app.use(express.json());
@@ -82,7 +82,7 @@ app.post("/entries", (req, res) => {
 
   let lat = null;
   let lon = null;
-  if (payload.lat !== undefined && payload.lon !== undefined) {
+  if (payload.lat !== undefined || payload.lon !== undefined) {
     if (typeof payload.lat !== "number" || typeof payload.lon !== "number") {
       res.status(400).json({
         error:
@@ -116,7 +116,15 @@ app.post("/entries", (req, res) => {
   res.json(getEntryStatement.get(id));
 });
 
-const port = 8080;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+const port = process.env.PORT || 8000;
+app
+  .listen(port, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Server is running on port ${port}`);
+    }
+  })
+  .on("close", () => {
+    db.close();
+  });
