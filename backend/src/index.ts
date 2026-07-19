@@ -1,12 +1,8 @@
 import express from "express";
-import sampleData from "../sample-data/data.json" with { type: "json" };
+import sampleData from "./sample-data/data.json" with { type: "json" };
 import { DatabaseSync } from "node:sqlite";
 
 const db = new DatabaseSync("./db.sqlite");
-
-const addEntryStatement = db.prepare(
-  `INSERT INTO events (id, title, body, isoTime, lat, lon) VALUES (?, ?, ?, ?, ?, ?)`,
-);
 
 if (
   !db
@@ -23,6 +19,9 @@ if (
     lat REAL,
     lon REAL
     )`);
+  const addEntryStatement = db.prepare(
+    `INSERT INTO events (id, title, body, isoTime, lat, lon) VALUES (?, ?, ?, ?, ?, ?)`,
+  );
   sampleData.forEach((dataPoint) => {
     addEntryStatement.run(
       dataPoint.id,
@@ -67,6 +66,9 @@ app.get("/entries/:id", (req, res) => {
   res.json(getEntryStatement.get(id));
 });
 
+const addEntryStatement = db.prepare(
+  `INSERT INTO events (id, title, body, isoTime, lat, lon) VALUES (?, ?, ?, ?, ?, ?)`,
+);
 app.post("/entries", (req, res) => {
   const payload = req.body;
   if (typeof payload.title !== "string" || payload.title.length > 120) {
@@ -116,7 +118,7 @@ app.post("/entries", (req, res) => {
   res.json(getEntryStatement.get(id));
 });
 
-const port = process.env.PORT || 8000;
+const port = parseInt(process.env.PORT ?? "8000");
 app
   .listen(port, (err) => {
     if (err) {
